@@ -1,0 +1,14 @@
+{
+  "name": "@tarot/shared",
+  "version": "0.1.0",
+  "private": true,
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "lint": "echo 'No lint configured for shared package'"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}

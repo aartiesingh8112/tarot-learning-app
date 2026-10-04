@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "Tarot Learning",
+    "slug": "tarot-learning-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "assetBundlePatterns": ["**/*"]
+  }
+}

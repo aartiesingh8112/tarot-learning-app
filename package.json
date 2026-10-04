@@ -1,0 +1,18 @@
+{
+  "name": "tarot-learning-app",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "pnpm -r dev",
+    "dev:web": "pnpm --dir packages/web dev",
+    "dev:api": "pnpm --dir packages/api dev",
+    "dev:mobile": "pnpm --dir packages/mobile start",
+    "build": "pnpm -r build",
+    "type-check": "pnpm -r type-check",
+    "lint": "pnpm -r lint"
+  },
+  "packageManager": "pnpm@9.0.0"
+}
