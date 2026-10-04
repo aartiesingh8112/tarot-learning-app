@@ -1,72 +1,129 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useEffect, useMemo, useState } from 'react';
+import './styles.css';
 
-interface Card {
-  id: number;
+interface TarotCard {
+  id: string;
   name: string;
-  meaning: string;
+  suit: string;
+  arcana: 'major' | 'minor';
+  keywords: string[];
+  uprightMeaning: string;
+  reversedMeaning: string;
+  shortMeaning: string;
+  symbolism: string[];
+  numerology: string;
 }
 
+const apiBase = 'http://localhost:3001/api';
+
 function App() {
-  const [cards, setCards] = useState<Card[]>([]);
+  const [cards, setCards] = useState<TarotCard[]>([]);
+  const [selectedCard, setSelectedCard] = useState<TarotCard | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchCards = async () => {
-      try {
-        const response = await axios.get('http://localhost:3001/api/cards');
-        setCards(response.data.cards);
-      } catch (err) {
-        setError('Failed to load cards. Make sure the API is running on port 3001');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCards();
+    fetch(`${apiBase}/cards`)
+      .then((res) => res.json())
+      .then((data) => {
+        setCards(data.cards.slice(0, 30));
+        setSelectedCard(data.cards[0]);
+      })
+      .catch(() => setCards([]))
+      .finally(() => setLoading(false));
   }, []);
 
+  const majorCount = useMemo(
+    () => cards.filter((card) => card.arcana === 'major').length,
+    [cards]
+  );
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-900 to-indigo-900 text-white p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-5xl font-bold mb-2 text-center">🎴 Tarot Learning App</h1>
-        <p className="text-center text-purple-200 mb-8">Master the cards with interactive lessons and practice</p>
-
-        {error && (
-          <div className="bg-red-500 p-4 rounded-lg mb-6 text-center">
-            {error}
-          </div>
-        )}
-
-        {loading && (
-          <div className="text-center">
-            <p className="text-lg">Loading cards...</p>
-          </div>
-        )}
-
-        {!loading && !error && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {cards.map((card) => (
-              <div key={card.id} className="bg-purple-800 p-4 rounded-lg hover:bg-purple-700 transition">
-                <h3 className="text-xl font-bold mb-2">{card.name}</h3>
-                <p className="text-purple-200">{card.meaning}</p>
-              </div>
-            ))}
-          </div>
-        )}
-
-        <div className="mt-8 bg-indigo-800 p-4 rounded-lg">
-          <h2 className="text-2xl font-bold mb-2">Getting Started</h2>
-          <ol className="list-decimal list-inside space-y-2 text-purple-200">
-            <li>Ensure the API is running on port 3001</li>
-            <li>Browse the tarot cards and their meanings</li>
-            <li>Practice with interactive lessons</li>
-            <li>Track your learning progress</li>
-          </ol>
+    <div className="app-shell">
+      <header className="header">
+        <div>
+          <p className="eyebrow">Tarot study companion</p>
+          <h1>Tarot Learning App</h1>
         </div>
-      </div>
+        <div className="pill-row">
+          <span className="pill">{cards.length} cards</span>
+          <span className="pill">{majorCount} major arcana</span>
+        </div>
+      </header>
+
+      <main className="layout">
+        <aside className="panel sidebar">
+          <h2>Deck</h2>
+          {loading ? (
+            <p>Loading deck...</p>
+          ) : (
+            <div className="card-list">
+              {cards.map((card) => (
+                <button
+                  key={card.id}
+                  className={`card-button ${selectedCard?.id === card.id ? 'active' : ''}`}
+                  onClick={() => setSelectedCard(card)}
+                >
+                  <span>{card.name}</span>
+                  <small>{card.suit}</small>
+                </button>
+              ))}
+            </div>
+          )}
+        </aside>
+
+        <section className="panel detail-panel">
+          {selectedCard ? (
+            <>
+              <div className="card-hero">
+                <div className="card-art">
+                  <span>{selectedCard.name.slice(0, 1)}</span>
+                </div>
+                <div>
+                  <p className="small-label">{selectedCard.arcana} arcana</p>
+                  <h2>{selectedCard.name}</h2>
+                  <p className="suit-line">{selectedCard.suit}</p>
+                </div>
+              </div>
+
+              <div className="info-grid">
+                <div>
+                  <h3>Upright</h3>
+                  <p>{selectedCard.uprightMeaning}</p>
+                </div>
+                <div>
+                  <h3>Reversed</h3>
+                  <p>{selectedCard.reversedMeaning}</p>
+                </div>
+              </div>
+
+              <div className="meta-boxes">
+                <div>
+                  <h4>Keywords</h4>
+                  <div className="tag-box">
+                    {selectedCard.keywords.map((keyword) => (
+                      <span key={keyword} className="tag">{keyword}</span>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <h4>Symbolism</h4>
+                  <div className="tag-box">
+                    {selectedCard.symbolism.map((symbol) => (
+                      <span key={symbol} className="tag subtle">{symbol}</span>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <h4>Numerology</h4>
+                  <p>{selectedCard.numerology}</p>
+                </div>
+              </div>
+            </>
+          ) : (
+            <p>Select a card to see its meaning.</p>
+          )}
+        </section>
+      </main>
     </div>
   );
 }
