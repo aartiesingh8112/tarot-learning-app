@@ -1,0 +1,23 @@
+{
+  "name": "@tarot/mobile",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "react": "18.2.0",
+    "react-native": "0.73.0",
+    "expo": "^50.0.0",
+    "expo-router": "^3.0.0",
+    "axios": "^1.6.0",
+    "@tarot/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "typescript": "^5.3.0"
+  }
+}
