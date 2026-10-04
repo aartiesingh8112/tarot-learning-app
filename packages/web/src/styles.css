@@ -1,151 +1,114 @@
-* {
-  box-sizing: border-box;
+import { useMemo, useState } from 'react';
+import { ALL_TAROT_CARDS, CARD_INTERACTIONS, CARD_PATTERNS } from '@tarot/shared';
+import PatternDashboard from './components/PatternDashboard';
+import CombinationStudy from './components/CombinationStudy';
+
+function App() {
+  const [reversalsEnabled, setReversalsEnabled] = useState(false);
+
+  const summary = useMemo(() => {
+    return {
+      totalCards: ALL_TAROT_CARDS.length,
+      majors: ALL_TAROT_CARDS.filter((card) => card.arcana === 'major').length,
+      minors: ALL_TAROT_CARDS.filter((card) => card.arcana === 'minor').length,
+      patterns: CARD_PATTERNS.length,
+      interactions: CARD_INTERACTIONS.length
+    };
+  }, []);
+
+  return (
+    <div className="app-shell">
+      <header className="hero">
+        <div>
+          <p className="eyebrow">Tarot Learning</p>
+          <h1>Study tarot patterns, suits, numerology, and combinations</h1>
+          <p className="subtitle">
+            Learn Major Arcana, court cards, minors, elemental balance, and interaction systems in a guided learning environment.
+          </p>
+          <div className="cta-row">
+            <button className="primary">Start learning</button>
+            <button className="secondary">Browse deck</button>
+          </div>
+        </div>
+      </header>
+
+      <section className="settings-card">
+        <div>
+          <h2>Study settings</h2>
+          <p>Reversed meanings can be enabled or disabled at any time.</p>
+        </div>
+        <label className="toggle-row">
+          <span>Use reversed meanings</span>
+          <input
+            type="checkbox"
+            checked={reversalsEnabled}
+            onChange={(event) => setReversalsEnabled(event.target.checked)}
+          />
+        </label>
+      </section>
+
+      <section className="stats-grid">
+        <div className="stat-card">
+          <span>Total cards</span>
+          <strong>{summary.totalCards}</strong>
+        </div>
+        <div className="stat-card">
+          <span>Major arcana</span>
+          <strong>{summary.majors}</strong>
+        </div>
+        <div className="stat-card">
+          <span>Minor arcana</span>
+          <strong>{summary.minors}</strong>
+        </div>
+        <div className="stat-card">
+          <span>Pattern models</span>
+          <strong>{summary.patterns}</strong>
+        </div>
+        <div className="stat-card">
+          <span>Interaction models</span>
+          <strong>{summary.interactions}</strong>
+        </div>
+      </section>
+
+      <section className="content-grid">
+        <article className="panel">
+          <h3>Pattern recognition</h3>
+          <ul>
+            <li>Major Arcana dominance</li>
+            <li>Suit repetition</li>
+            <li>Elemental balance</li>
+            <li>Numerical sequences</li>
+            <li>Court card clusters</li>
+            <li>Symbolic resonance</li>
+          </ul>
+        </article>
+
+        <article className="panel">
+          <h3>Card interaction focus</h3>
+          <ul>
+            <li>Elemental dynamics</li>
+            <li>Suit-based pairing</li>
+            <li>Numerological integration</li>
+            <li>Combination reading</li>
+            <li>Spread interpretation</li>
+            <li>Archetypal pattern analysis</li>
+          </ul>
+        </article>
+
+        <article className="panel">
+          <h3>Reversals behavior</h3>
+          <p>
+            {reversalsEnabled
+              ? 'Reversed meanings are active, including reversed prompts in practice and readings.'
+              : 'Reversals are off. The app shows upright meanings only and avoids reversed prompts.'}
+          </p>
+        </article>
+      </section>
+
+      <PatternDashboard />
+      <CombinationStudy />
+    </div>
+  );
 }
 
-:root {
-  color: #f5efe7;
-  background: #120f1a;
-  font-family: Inter, system-ui, sans-serif;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: linear-gradient(180deg, #1a1220 0%, #120f1a 100%);
-}
-
-button,
-input {
-  font: inherit;
-}
-
-.app-shell {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 48px 20px 80px;
-}
-
-.hero {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-  padding: 40px;
-  margin-bottom: 24px;
-}
-
-.eyebrow {
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #d7b3ff;
-  font-size: 12px;
-  margin-bottom: 8px;
-}
-
-.hero h1 {
-  font-size: clamp(2rem, 5vw, 4rem);
-  line-height: 1.1;
-  margin: 0 0 16px;
-  max-width: 800px;
-}
-
-.subtitle {
-  color: #d8d0e7;
-  max-width: 700px;
-  font-size: 1.1rem;
-}
-
-.cta-row {
-  margin-top: 24px;
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.primary,
-.secondary {
-  border: none;
-  border-radius: 999px;
-  padding: 12px 20px;
-  cursor: pointer;
-}
-
-.primary {
-  background: linear-gradient(135deg, #b183ff 0%, #7c5cff 100%);
-  color: white;
-}
-
-.secondary {
-  background: rgba(255, 255, 255, 0.06);
-  color: #f5efe7;
-  border: 1px solid rgba(255,255,255,0.08);
-}
-
-.settings-card,
-.panel,
-.stat-card {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 18px;
-}
-
-.settings-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 24px;
-  margin-bottom: 24px;
-}
-
-.toggle-row {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  font-weight: 600;
-}
-
-.stats-grid,
-.content-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 20px;
-  margin-bottom: 24px;
-}
-
-.stat-card {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.stat-card span {
-  color: #d8d0e7;
-}
-
-.stat-card strong {
-  font-size: 2rem;
-}
-
-.panel {
-  padding: 24px;
-}
-
-.panel h3 {
-  margin-top: 0;
-  margin-bottom: 12px;
-}
-
-.panel ul,
-.panel ol {
-  margin: 0;
-  padding-left: 18px;
-  color: #e8def8;
-}
-
-.panel li + li {
-  margin-top: 8px;
-}
-
-.feature-panel {
-  margin-top: 24px;
-}
+export default App;
